@@ -65,12 +65,12 @@ function App() {
     return filterWords(allWords, correct, wrong, excludedSet);
   }, [allWords, correct, wrong, excludedSet, loading, error, isEmptyFilters]);
 
-  // const topWords = results.slice(0, 5);
-  // const {
-  //   data: trendData,
-  //   loading: trendLoading,
-  //   error: trendError,
-  // } = useTrends(topWords);
+  const topWords = results.slice(0, 5);
+  const {
+    data: trendData,
+    loading: trendLoading,
+    error: trendError,
+  } = useTrends(topWords);
 
   const updateCorrect = (i: number, v: string) => {
     const next = [...correct];
@@ -97,12 +97,10 @@ function App() {
   };
 
   return (
-    <div className="h-screen w-screen bg-gray-50 text-gray-900">
-      <div className="max-w-3xl mx-auto p-4 md:p-8 flex flex-col gap-6 w-full h-full">
+    <div className="h-screen w-screen bg-gray-50 text-gray-900 overflow-y-auto">
+      <div className="max-w-3xl mx-auto p-4 md:p-8 flex flex-col gap-6">
         <header className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold">
-            5-Letter Word Filter
-          </h1>
+          <h1 className="text-2xl md:text-3xl font-bold">Wordle Butler</h1>
           <button
             onClick={clearAll}
             className="px-3 py-1.5 text-sm rounded bg-gray-200 hover:bg-gray-300"
@@ -190,10 +188,10 @@ function App() {
           )}
         </section>
 
-        {/* {!isEmptyFilters && (
+        {!isEmptyFilters && (
           <section className="bg-white rounded-lg shadow p-4 md:p-6">
             <h2 className="font-semibold text-lg mb-3">
-              Word Trends (2019-2025)
+              Word Trends (2021-2025)
             </h2>
             {trendLoading && <p>Loading trend data…</p>}
             {trendError && (
@@ -203,14 +201,16 @@ function App() {
             )}
             {!trendLoading && !trendError && trendData.length > 0 && (
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={trendData}>
+                <LineChart
+                  data={[...trendData].sort((a, b) => a.year - b.year)}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="year" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
                   {Object.keys(trendData[0])
-                    .filter((k) => k !== "year")
+                    .filter((k) => k !== "year" && results.includes(k))
                     .map((word, idx) => (
                       <Line
                         key={word}
@@ -223,7 +223,7 @@ function App() {
               </ResponsiveContainer>
             )}
           </section>
-        )} */}
+        )}
       </div>
     </div>
   );

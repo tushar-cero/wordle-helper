@@ -22,18 +22,17 @@ export function useTrends(words: string[], baseUrl = "") {
       try {
         setLoading(true);
         setError(null);
-        // const query = encodeURIComponent(wordsKey);
-        const url = `https://localhost:8000/ngrams?content=${wordsKey}&year_start=2017&year_end=2025&corpus=26&smoothing=1&case_insensitive=true`;
+        const url = `http://localhost:8000/ngram?content=${wordsKey}&year_start=2017&year_end=2025&corpus=26&smoothing=1&case_insensitive=true`;
         const res = await fetch(url, { signal: controller.signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const payload: Array<{ ngram: string; timeseries: number[] }> =
           await res.json();
 
-        const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+        const years = [2021, 2022, 2023, 2024, 2025];
         const chart = years.map((year, idx) => {
           const row: TrendPoint = { year } as TrendPoint;
           payload.forEach((p) => {
-            row[p.ngram] = p.timeseries?.[idx] ?? 0;
+            row[p.ngram] = p.timeseries?.[p.timeseries.length - 1 - idx] ?? 0;
           });
           return row;
         });
